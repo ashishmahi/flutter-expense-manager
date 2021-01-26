@@ -4,8 +4,9 @@ import 'package:intl/intl.dart';
 
 class TransactionList extends StatelessWidget {
   final List<Transaction> _tranactions;
+  final Function _deleteTransaction;
 
-  TransactionList(this._tranactions);
+  TransactionList(this._tranactions, this._deleteTransaction);
   Widget build(BuildContext context) {
     return Container(
         height: 600,
@@ -40,7 +41,8 @@ class TransactionList extends StatelessWidget {
                         child: FittedBox(
                           child: Text(
                               "₹${_tranactions[index].amount.toStringAsFixed(2)}",
-                              style: TextStyle(color: Colors.white,fontSize: 16)),
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 16)),
                         ),
                       ),
                       title: Text(
@@ -50,9 +52,14 @@ class TransactionList extends StatelessWidget {
                       subtitle: Text(
                           DateFormat.yMMMd().format(_tranactions[index].date),
                           style: Theme.of(context).textTheme.bodyText1),
-                      trailing: Icon(
-                        Icons.delete,
-                        color: Colors.red,
+                      trailing: IconButton(
+                        onPressed: () {
+                          _deleteTransaction(_tranactions[index].id);
+                        },
+                        icon: Icon(
+                          Icons.delete,
+                          color: Colors.red,
+                        ),
                       ),
                     ),
                   );
