@@ -16,8 +16,10 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
           primarySwatch: Colors.pink,
           visualDensity: VisualDensity.adaptivePlatformDensity,
+          fontFamily: 'Quicksand',
           textTheme: ThemeData.light().textTheme.copyWith(
-              bodyText1: TextStyle(fontFamily: 'Quicksand', fontSize: 16))),
+              bodyText1: TextStyle(fontFamily: 'Quicksand', fontSize: 16),
+              button: TextStyle(color: Colors.white))),
       home: MyHomePage(),
     );
   }
@@ -54,11 +56,11 @@ class _MyHomePageState extends State<MyHomePage> {
         id: 't2', title: 'New Glasses', date: DateTime.now(), amount: 12.12)
   ];
 
-  void _addNewTransaction(String title, double amount) {
+  void _addNewTransaction(String title, double amount, DateTime date) {
     final newTx = Transaction(
         id: DateTime.now().toString(),
         title: title,
-        date: DateTime.now(),
+        date: date,
         amount: amount);
     setState(() {
       _tranactions.add(newTx);
