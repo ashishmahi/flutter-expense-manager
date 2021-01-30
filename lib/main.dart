@@ -3,8 +3,12 @@ import 'package:expense_manager/widgets/chart.dart';
 import 'package:expense_manager/widgets/new_transaction.dart';
 import 'package:expense_manager/widgets/tranactions_list.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setPreferredOrientations(
+      [DeviceOrientation.portraitDown, DeviceOrientation.portraitUp]);
   runApp(MyApp());
 }
 
@@ -48,12 +52,17 @@ class _MyHomePageState extends State<MyHomePage> {
   final List<Transaction> _tranactions = [
     Transaction(
         id: 't1', title: 'New Shoes', date: DateTime.now(), amount: 65.11),
+    Transaction(id: 't2', title: 'New Bag', date: DateTime.now(), amount: 5.11),
     Transaction(
-        id: 't1', title: 'New Shoes', date: DateTime.now(), amount: 65.11),
+        id: 't3', title: 'New Pant', date: DateTime.now(), amount: 12.11),
     Transaction(
-        id: 't1', title: 'New Shoes', date: DateTime.now(), amount: 65.11),
+        id: 't4', title: 'New shirt', date: DateTime.now(), amount: 43.12),
     Transaction(
-        id: 't2', title: 'New Glasses', date: DateTime.now(), amount: 12.12)
+        id: 't5', title: 'New Item', date: DateTime.now(), amount: 67.12),
+    Transaction(
+        id: 't6', title: 'New Gir', date: DateTime.now(), amount: 90.12),
+    Transaction(id: 't7', title: 'New Fir', date: DateTime.now(), amount: 1.12),
+    Transaction(id: 't8', title: 'New Ver', date: DateTime.now(), amount: 4.12)
   ];
 
   void _addNewTransaction(String title, double amount, DateTime date) {
@@ -76,23 +85,34 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     //
+    var appBar = AppBar(
+      title: Text(MyHomePage.title),
+      actions: [
+        IconButton(
+          onPressed: () => showNewTransactionPopup(context),
+          icon: Icon(Icons.add),
+        )
+      ],
+    );
     return Scaffold(
-      appBar: AppBar(
-        title: Text(MyHomePage.title),
-        actions: [
-          IconButton(
-            onPressed: () => showNewTransactionPopup(context),
-            icon: Icon(Icons.add),
-          )
-        ],
-      ),
+      appBar: appBar,
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Container(width: double.infinity, child: Chart(_tranactions)),
-            TransactionList(_tranactions, _deleteTransaction)
+            Container(
+                height: (MediaQuery.of(context).size.height -
+                        MediaQuery.of(context).padding.top -
+                        appBar.preferredSize.height) *
+                    0.3,
+                child: Chart(_tranactions)),
+            Container(
+                height: (MediaQuery.of(context).size.height -
+                        MediaQuery.of(context).padding.top -
+                        appBar.preferredSize.height) *
+                    0.7,
+                child: TransactionList(_tranactions, _deleteTransaction))
           ],
         ),
       ),
