@@ -1,6 +1,6 @@
 import 'package:expense_manager/models/transaction.dart';
+import 'package:expense_manager/widgets/transaction_item.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 class TransactionList extends StatelessWidget {
   final List<Transaction> _tranactions;
@@ -32,47 +32,9 @@ class TransactionList extends StatelessWidget {
         : ListView.builder(
             itemCount: _tranactions.length,
             itemBuilder: (ctx, index) {
-              return Card(
-                elevation: 5,
-                margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 8),
-                child: ListTile(
-                  leading: CircleAvatar(
-                    radius: 30,
-                    child: FittedBox(
-                      child: Text(
-                          "₹${_tranactions[index].amount.toStringAsFixed(2)}",
-                          style: TextStyle(color: Colors.white, fontSize: 16)),
-                    ),
-                  ),
-                  title: Text(
-                    _tranactions[index].title,
-                    style: Theme.of(context).textTheme.bodyText1,
-                  ),
-                  subtitle: Text(
-                      DateFormat.yMMMd().format(_tranactions[index].date),
-                      style: Theme.of(context).textTheme.bodyText1),
-                  trailing: MediaQuery.of(context).size.width > 400
-                      ? FlatButton.icon(
-                          onPressed: () {
-                            _deleteTransaction(_tranactions[index].id);
-                          },
-                          icon: const Icon(
-                            Icons.delete,
-                            color: Colors.red,
-                          ),
-                          textColor: Colors.red,
-                          label: const Text('Delete'))
-                      : IconButton(
-                          onPressed: () {
-                            _deleteTransaction(_tranactions[index].id);
-                          },
-                          icon: const Icon(
-                            Icons.delete,
-                            color: Colors.red,
-                          ),
-                        ),
-                ),
-              );
+              return TransactionItem(
+                  tranaction: _tranactions[index],
+                  deleteTransaction: _deleteTransaction);
             },
           );
   }
