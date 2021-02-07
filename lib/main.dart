@@ -91,28 +91,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     //
     final mediaQueryData = MediaQuery.of(context);
-    final PreferredSizeWidget appBar = Platform.isIOS
-        ? CupertinoNavigationBar(
-            middle: Text(MyHomePage.title),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                GestureDetector(
-                  onTap: () => showNewTransactionPopup(context),
-                  child: Icon(CupertinoIcons.add),
-                )
-              ],
-            ),
-          )
-        : AppBar(
-            title: Text(MyHomePage.title),
-            actions: [
-              IconButton(
-                onPressed: () => showNewTransactionPopup(context),
-                icon: Icon(Icons.add),
-              )
-            ],
-          );
+    final PreferredSizeWidget appBar = _buildAppBar(context);
     final bool isLandscape =
         mediaQueryData.orientation == Orientation.landscape;
     var transactionList = Container(
@@ -127,40 +106,9 @@ class _MyHomePageState extends State<MyHomePage> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
         if (isLandscape)
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                "Show Chart",
-                style: Theme.of(context).textTheme.bodyText1,
-              ),
-              Switch.adaptive(
-                  activeColor: Theme.of(context).accentColor,
-                  value: _showChart,
-                  onChanged: (val) {
-                    setState(() {
-                      _showChart = val;
-                    });
-                  })
-            ],
-          ),
+          ..._buildLandscape(context, mediaQueryData, appBar, transactionList),
         if (!isLandscape)
-          Container(
-              height: (mediaQueryData.size.height -
-                      mediaQueryData.padding.top -
-                      appBar.preferredSize.height) *
-                  0.3,
-              child: Chart(_tranactions)),
-        if (!isLandscape) transactionList,
-        if (isLandscape)
-          _showChart
-              ? Container(
-                  height: (mediaQueryData.size.height -
-                          mediaQueryData.padding.top -
-                          appBar.preferredSize.height) *
-                      0.7,
-                  child: Chart(_tranactions))
-              : transactionList
+          ..._buildPortraitContent(mediaQueryData, appBar, transactionList),
       ],
     ));
     return Platform.isIOS
@@ -180,5 +128,81 @@ class _MyHomePageState extends State<MyHomePage> {
               onPressed: () => showNewTransactionPopup(context),
             ),
           );
+  }
+
+  PreferredSizeWidget _buildAppBar(BuildContext context) {
+    return Platform.isIOS
+        ? _buildCupertinoNavigationBar(context)
+        : AppBar(
+            title: Text(MyHomePage.title),
+            actions: [
+              IconButton(
+                onPressed: () => showNewTransactionPopup(context),
+                icon: Icon(Icons.add),
+              )
+            ],
+          );
+  }
+
+  CupertinoNavigationBar _buildCupertinoNavigationBar(BuildContext context) {
+    return CupertinoNavigationBar(
+      middle: Text(MyHomePage.title),
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          GestureDetector(
+            onTap: () => showNewTransactionPopup(context),
+            child: Icon(CupertinoIcons.add),
+          )
+        ],
+      ),
+    );
+  }
+
+  List<Widget> _buildPortraitContent(MediaQueryData mediaQueryData,
+      PreferredSizeWidget appBar, Widget txList) {
+    return [
+      Container(
+          height: (mediaQueryData.size.height -
+                  mediaQueryData.padding.top -
+                  appBar.preferredSize.height) *
+              0.3,
+          child: Chart(_tranactions)),
+      txList
+    ];
+  }
+
+  List<Widget> _buildLandscape(
+      BuildContext context,
+      MediaQueryData mediaQueryData,
+      PreferredSizeWidget appBar,
+      Widget txList) {
+    return [
+      Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            "Show Chart",
+            style: Theme.of(context).textTheme.bodyText1,
+          ),
+          Switch.adaptive(
+              activeColor: Theme.of(context).accentColor,
+              value: _showChart,
+              onChanged: (val) {
+                setState(() {
+                  _showChart = val;
+                });
+              })
+        ],
+      ),
+      _showChart
+          ? Container(
+              height: (mediaQueryData.size.height -
+                      mediaQueryData.padding.top -
+                      appBar.preferredSize.height) *
+                  0.7,
+              child: Chart(_tranactions))
+          : txList
+    ];
   }
 }
